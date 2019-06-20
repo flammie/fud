@@ -90,12 +90,16 @@ def main():
         elif line.startswith('#'):
             print(line)
         else:
-            conllus = line.strip().split()
-            anals = analyse(hfst, conllus[1])
+            refs = line.strip().split('\t')
+            anals = analyse(hfst, refs[1])
             best = get_best_analysis(anals)
             if best:
-                conllu = hfst2conllu(best)
-                print('\t'.join(conllu))
+                hyps = hfst2conllu(best)
+                hyps[0] = refs[0]
+                hyps[1] = refs[1]
+                if refs[9] != '_' and hyps[9] != '_':
+                    hyps[9] += '|' + refs[9]
+                print('\t'.join(hyps))
             else:
                 print(line)
     exit(0)
