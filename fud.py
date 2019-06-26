@@ -101,7 +101,15 @@ def main():
                     hyps[9] += '|' + refs[9]
                 print('\t'.join(hyps))
             else:
-                print(line)
+                hyps = refs
+                hyps[2] = hyps[1]
+                hyps[3] = 'NOUN'
+                hyps[5] = '_'
+                if hyps[9] == '_':
+                    hyps[9] = 'OOV'
+                else:
+                    hyps[9] += '|OOV'
+                print('\t'.join(hyps))
     exit(0)
 
 
