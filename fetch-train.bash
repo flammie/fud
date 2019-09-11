@@ -27,12 +27,15 @@ else
     wget -O data/${TLC}_${TREELOWER}-ud-${TREEPART}.conllu \
         $GITHUB/UD_$TREELANG-$TREEBANK/master/${TLC}_$TREELOWER-ud-$TREEPART.conllu
 fi
-if test -f symbols.$TLC ; then
-    echo symbols.$TLC is already there
+if test -f data/symbols.$TLC ; then
+    echo data/symbols.$TLC is already there
 else
-    wget $GITHUB/tools/master/data/feat_val.$TLC
-    if ! test -f symbols.ud ; then
+    wget -O data/feat_val.$TLC $GITHUB/tools/master/data/feat_val.$TLC
+    wget -O data/deprel.$TLC $GITHUB/tools/master/data/deprel.$TLC
+    if ! test -f data/symbols.ud ; then
         bash getsymbols.bash
     fi
-    cat symbols.ud feat_val.$TLC > symbols.$TLC
+    cat data/cpos.ud data/feat_val.ud data/deprel.ud \
+        data/feat_val.$TLC data/deprel.$TLC |\
+        sed -e 's/^/|/' > data/symbols.$TLC
 fi

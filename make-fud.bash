@@ -39,7 +39,7 @@ gawk -f tropicalize-uniq-c-add-smoothing.awk \
     --assign=CS=$(<data/${LMPREFIX}.tokencount)\
     --assign=LS=$(<data/${LMPREFIX}.typecount) < data/${LMPREFIX}.sortuniqc > \
     data/${LMPREFIX}.tropical-a1.hfststrings
-hfst-strings2fst -j -m symbols.$TLC -i data/${LMPREFIX}.tropical-a1.hfststrings \
+hfst-strings2fst -j -m data/symbols.$TLC -i data/${LMPREFIX}.tropical-a1.hfststrings \
     -o models/${LMPREFIX}.tropical-a1.hfst
 hfst-minimize -i models/${LMPREFIX}.tropical-a1.hfst |\
     hfst-fst2fst -f olw -o models/${LMPREFIX}.tropical-a1.hfstol
