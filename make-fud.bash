@@ -22,20 +22,25 @@ fi
 LMPREFIX=${TLC}_${TREELOWER}-ud-$TREEPART
 echo $1 is $TREELANG language treebank $TREEBANK
 echo we create language model data in ${LMPREFIX}.\*
-
-if ! test -f ${LMPREFIX}.conllu ; then
+if ! test -d data ; then
+    mkdir data
+fi
+if ! test -f data/${LMPREFIX}.conllu ; then
     bash ./fetch-train.bash $@
 fi
-gawk -f conllu2fststrings.awk < ${LMPREFIX}.conllu > ${LMPREFIX}.hfststrings
-wc -l < ${LMPREFIX}.hfststrings > ${LMPREFIX}.tokencount
-sort < ${LMPREFIX}.hfststrings | uniq -c > ${LMPREFIX}.sortuniqc
-wc -l < ${LMPREFIX}.sortuniqc > ${LMPREFIX}.typecount
+if ! test -d models ; then
+    mkdir models
+fi
+gawk -f conllu2fststrings.awk < data/${LMPREFIX}.conllu > data/${LMPREFIX}.hfststrings
+wc -l < data/${LMPREFIX}.hfststrings > data/${LMPREFIX}.tokencount
+sort < data/${LMPREFIX}.hfststrings | uniq -c > data/${LMPREFIX}.sortuniqc
+wc -l < data/${LMPREFIX}.sortuniqc > data/${LMPREFIX}.typecount
 gawk -f tropicalize-uniq-c-add-smoothing.awk \
-    --assign=CS=$(<${LMPREFIX}.tokencount)\
-    --assign=LS=$(<${LMPREFIX}.typecount) < ${LMPREFIX}.sortuniqc > \
-    ${LMPREFIX}.tropical-a1.hfststrings
-hfst-strings2fst -j -m symbols.$TLC -i ${LMPREFIX}.tropical-a1.hfststrings \
-    -o ${LMPREFIX}.tropical-a1.hfst
-hfst-minimize -i ${LMPREFIX}.tropical-a1.hfst |\
-    hfst-fst2fst -f olw -o ${LMPREFIX}.tropical-a1.hfstol
+    --assign=CS=$(<data/${LMPREFIX}.tokencount)\
+    --assign=LS=$(<data/${LMPREFIX}.typecount) < data/${LMPREFIX}.sortuniqc > \
+    data/${LMPREFIX}.tropical-a1.hfststrings
+hfst-strings2fst -j -m symbols.$TLC -i data/${LMPREFIX}.tropical-a1.hfststrings \
+    -o models/${LMPREFIX}.tropical-a1.hfst
+hfst-minimize -i models/${LMPREFIX}.tropical-a1.hfst |\
+    hfst-fst2fst -f olw -o models/${LMPREFIX}.tropical-a1.hfstol
 

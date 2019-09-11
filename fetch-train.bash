@@ -21,10 +21,11 @@ if test $# = 3 ; then
 fi
 echo $1 is $TREELANG language treebank $TREEBANK
 
-if test -f ${TLC}_$TREELOWER-ud-$TREEPART.conllu ; then
-    echo ${TLC}_$TREELOWER-ud-$TREEPART.conllu is already downloaded
+if test -f data/${TLC}_$TREELOWER-ud-$TREEPART.conllu ; then
+    echo data/${TLC}_$TREELOWER-ud-$TREEPART.conllu is already downloaded
 else
-    wget $GITHUB/UD_$TREELANG-$TREEBANK/master/${TLC}_$TREELOWER-ud-$TREEPART.conllu
+    wget -O data/${TLC}_${TREELOWER}-ud-${TREEPART}.conllu \
+        $GITHUB/UD_$TREELANG-$TREEBANK/master/${TLC}_$TREELOWER-ud-$TREEPART.conllu
 fi
 if test -f symbols.$TLC ; then
     echo symbols.$TLC is already there
