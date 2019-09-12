@@ -12,6 +12,7 @@ Try dependencies in some format...
 from argparse import ArgumentParser
 from sys import stdin
 
+import hfst
 import libhfst
 
 
@@ -29,7 +30,7 @@ def load_analyser(filename):
         FileNotFoundError if file is not found
     """
     try:
-        his = libhfst.HfstInputStream(filename)
+        his = hfst.HfstInputStream(filename)
         return his.read()
     except libhfst.NotTransducerStreamException:
         raise IOError(2, filename) from None
@@ -82,7 +83,7 @@ def main():
     argp.add_argument('-i', '--input', metavar="INFILE", type=open,
                       dest="infile", help="source of analysis data in CONLLU")
     options = argp.parse_args()
-    hfst = load_analyser(options.analyser)
+    analyser = load_analyser(options.analyser)
     sentence = hfst.epsilon_fst()
     if not options.infile:
         options.infile = stdin
@@ -94,7 +95,7 @@ def main():
             print(line)
         else:
             refs = line.strip().split('\t')
-            anals = analyse(hfst, refs[1])
+            anals = analyse(analyser, refs[1])
             if anals:
                 lattice = hfst.empty_fst()
                 for anal in anals:
@@ -102,14 +103,14 @@ def main():
                     deep = anal[0]
                     weight = anal[1]
                     print(surf, deep)
-                    bleh = hfst.fst(surf, deep, weight)
+                    bleh = hfst.fst({surf: deep})
                     lattice.disjunct(bleh)
                 sentence.concatenate(lattice)
             else:
                 surf = refs[1]
                 deep = refs[1] + "|NOUN|Case=Nom|Number=Sing|Guess=Yes|nsubj"
                 print(surf, deep)
-                bleh = hfst.fst(surf, deep, PENALTY_)
+                bleh = hfst.fst({surf: deep})
                 sentence.concatenate(bleh)
             print("@TOKEN SEPARATOR@")
             foo = hfst.fst("@TOKEN_SEPARATOR@")
