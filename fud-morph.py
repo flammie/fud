@@ -66,8 +66,12 @@ def hfst2conllu(anal):
     fuds = anal[0].split('|')
     lemma = fuds[0]
     upos = fuds[1]
-    ufeats = '|'.join(fuds[2:])
-    conllu = ['_', '_', lemma, upos, upos, ufeats, '_', '_', '_',
+    if len(fuds) > 3:
+        ufeats = '|'.join(fuds[2:-1])
+    else:
+        ufeats = '_'
+    udep = fuds[-1]
+    conllu = ['_', '_', lemma, upos, upos, ufeats, '_', udep, '_',
               'Weight=' + str(anal[1])]
     return conllu
 
