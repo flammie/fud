@@ -27,22 +27,22 @@ bash fetch-train.bash $1 $2 train
 bash fetch-train.bash $1 $2 dev
 bash fetch-train.bash $1 $2 test
 
-if test -f $LMPREFIX.conllu ; then
-    python3 fud.py -a ${LMPREFIX}.tropical-a1.hfstol -i ${LMPREFIX}.conllu \
-        > ${LMPREFIX}.reconllu
-    python3 conllu-compare.py -r ${LMPREFIX}.conllu -H ${LMPREFIX}.reconllu \
-        -t 0 -l ${LMPREFIX}.log
+if test -f data/$LMPREFIX.conllu ; then
+    python3 fud-morph.py -a models/${LMPREFIX}.tropical-a1.hfstol -i data/${LMPREFIX}.conllu \
+        > data/${LMPREFIX}.reconllu
+    python3 conllu-compare.py -r data/${LMPREFIX}.conllu -H data/${LMPREFIX}.reconllu \
+        -t 0 -l data/${LMPREFIX}.log
 fi
-if test -f $DEVPREFIX.conllu ; then
-    python3 fud.py -a ${LMPREFIX}.tropical-a1.hfstol -i ${DEVPREFIX}.conllu \
-        > $DEVPREFIX.reconllu
-    python3 conllu-compare.py -r ${DEVPREFIX}.conllu -H ${DEVPREFIX}.reconllu \
-        -t 0 -l ${DEVPREFIX}.log
+if test -f data/$DEVPREFIX.conllu ; then
+    python3 fud-morph.py -a models/${LMPREFIX}.tropical-a1.hfstol -i data/${DEVPREFIX}.conllu \
+        > data/$DEVPREFIX.reconllu
+    python3 conllu-compare.py -r data/${DEVPREFIX}.conllu -H data/${DEVPREFIX}.reconllu \
+        -t 0 -l data/${DEVPREFIX}.log
 fi
-if test -f $TESTPREFIX.conllu ; then
-    python3 fud.py -a ${LMPREFIX}.tropical-a1.hfstol -i ${TESTPREFIX}.conllu \
-        > $TESTPREFIX.reconllu
-    python3 conllu-compare.py -r ${TESTPREFIX}.conllu -H ${TESTPREFIX}.reconllu \
-        -t 0 -l ${TESTPREFIX}.log
+if test -f data/$TESTPREFIX.conllu ; then
+    python3 fud-morph.py -a models/${LMPREFIX}.tropical-a1.hfstol -i data/${TESTPREFIX}.conllu \
+        > data/$TESTPREFIX.reconllu
+    python3 conllu-compare.py -r data/${TESTPREFIX}.conllu -H data/${TESTPREFIX}.reconllu \
+        -t 0 -l data/${TESTPREFIX}.log
 fi
 

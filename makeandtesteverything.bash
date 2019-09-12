@@ -4,4 +4,4 @@ while read l ; do
     echo $l
     bash make-fud.bash $l
     bash test-fud.bash $l
-done < treebanks.tsv
+done < treebanks.tsv | tee alltests.log

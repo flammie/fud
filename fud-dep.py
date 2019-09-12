@@ -4,6 +4,8 @@
 
 """
 Use FUD HFST automaton to analyse tokenised texts in CONLL-U format.
+Create sentence automaton.
+Try dependencies in some format...
 """
 
 
@@ -81,27 +83,37 @@ def main():
                       dest="infile", help="source of analysis data in CONLLU")
     options = argp.parse_args()
     hfst = load_analyser(options.analyser)
+    sentence = hfst.epsilon_fst()
     if not options.infile:
         options.infile = stdin
     for line in options.infile:
         line = line.strip()
         if not line or line == '':
-            print()
+            print("@SENTENCE_SEPARATOR@")
         elif line.startswith('#'):
             print(line)
         else:
             refs = line.strip().split('\t')
             anals = analyse(hfst, refs[1])
-            best = get_best_analysis(anals)
-            if best:
-                hyps = hfst2conllu(best)
-                hyps[0] = refs[0]
-                hyps[1] = refs[1]
-                if refs[9] != '_' and hyps[9] != '_':
-                    hyps[9] += '|' + refs[9]
-                print('\t'.join(hyps))
+            if anals:
+                lattice = hfst.empty_fst()
+                for anal in anals:
+                    surf = refs[1]
+                    deep = anal[0]
+                    weight = anal[1]
+                    print(surf, deep)
+                    bleh = hfst.fst(surf, deep, weight)
+                    lattice.disjunct(bleh)
+                sentence.concatenate(lattice)
             else:
-                print(line)
+                surf = refs[1]
+                deep = refs[1] + "|NOUN|Case=Nom|Number=Sing|Guess=Yes|nsubj"
+                print(surf, deep)
+                bleh = hfst.fst(surf, deep, PENALTY_)
+                sentence.concatenate(bleh)
+            print("@TOKEN SEPARATOR@")
+            foo = hfst.fst("@TOKEN_SEPARATOR@")
+            sentence.concatenate(foo)
     exit(0)
 
 

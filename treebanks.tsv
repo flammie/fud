@@ -1,4 +1,4 @@
-Afrikaans-AfriBooms afr train
+Afrikaans-AfriBooms af train
 Akkadian-PISANDUB akk test
 Amharic-ATT amh test
 Ancient_Greek-Perseus grc train
@@ -56,7 +56,7 @@ French-Spoken fr train
 Galician-CTG gl train
 Galician-TreeGal gl train
 German-GSD de train
-German-HDT de test
+German-HDT de train
 German-LIT de train
 German-PUD de train
 Gothic-PROIEL got train
